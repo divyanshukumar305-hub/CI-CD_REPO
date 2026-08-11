@@ -1,24 +1,29 @@
-trigger:
-- main
+name: Terraform
 
-pool:
-  vmImage: 'ubuntu-latest'
+on:
+  push:
+    branches:
+      - main
 
-steps:
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
 
-- task: TerraformInstaller@1
-  displayName: 'Install Terraform'
-  inputs:
-    terraformVersion: 'latest'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-- script: terraform init
-  displayName: 'Terraform Init'
-  workingDirectory: 'perents'
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-- script: terraform validate
-  displayName: 'Terraform Validate'
-  workingDirectory: 'perents'
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./perents
 
-- script: terraform plan
-  displayName: 'Terraform Plan'
-  workingDirectory: 'perents'
+      - name: Terraform Validate
+        run: terraform validate
+        working-directory: ./perents
+
+      - name: Terraform Plan
+        run: terraform plan
+        working-directory: ./perents
